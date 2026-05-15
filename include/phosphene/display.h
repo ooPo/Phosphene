@@ -37,9 +37,9 @@ public:
   void shutdown();
 
 private:
-  Window *m_win                      = nullptr; // non-owning
-  SDL_GPUTexture *m_texture          = nullptr;
+  Window *m_win                         = nullptr; // non-owning
+  SDL_GPUTexture *m_texture             = nullptr;
   SDL_GPUTransferBuffer *m_transfer_buf = nullptr;
-  int m_fb_width                     = 0;
-  int m_fb_height                    = 0;
+  int m_fb_width                        = 0;
+  int m_fb_height                       = 0;
 };
