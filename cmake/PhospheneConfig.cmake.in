@@ -1,0 +1,12 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# FindSoxr.cmake is installed alongside this file so find_dependency can use it.
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+
+find_dependency(SDL3 REQUIRED)
+find_dependency(Soxr REQUIRED)
+
+include("${CMAKE_CURRENT_LIST_DIR}/PhospheneTargets.cmake")
+check_required_components(Phosphene)

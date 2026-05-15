@@ -1,0 +1,14 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 2
+BreakBeforeBraces: Attach
+InsertBraces: true
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossComments: false
+  AcrossEmptyLines: false
+AlignConsecutiveMacros:
+  Enabled: true
+ColumnLimit: 0
+---
