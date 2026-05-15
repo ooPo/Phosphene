@@ -11,10 +11,10 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install dependencies
-        run: brew install sdl3 libsoxr pkg-config
+        run: brew install sdl3 libsoxr
 
       - name: Print build configuration
         run: make info
