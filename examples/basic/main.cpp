@@ -175,8 +175,11 @@ int main() {
     InputState state = input.read();
     (void)state;
 
-    // 3. Frame pacing
-    audio.wait_for_frame();
+    // 3. Frame pacing — VSYNC already blocks in present(), so skip audio-wait
+    //    to avoid double-blocking (audio wait + vsync wait = ~2× frame time).
+    if (!ctx.is_vsync()) {
+      audio.wait_for_frame();
+    }
 
     // 4. DRC
     double drc_rate = audio.compute_drc_rate(resampler);

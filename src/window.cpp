@@ -26,17 +26,28 @@ void Window::init(const char *title, int width, int height) {
 
   SDL_ClaimWindowForGPUDevice(m_gpu, m_window);
 
-  // Prefer MAILBOX (tear-free, non-blocking) but fall back to VSYNC if the
-  // driver or Metal configuration doesn't support it.
-  if (!SDL_SetGPUSwapchainParameters(
+  // Prefer MAILBOX (tear-free, non-blocking). Fall back to IMMEDIATE
+  // (non-blocking, may tear slightly) so audio-based frame pacing stays in
+  // control. Only use VSYNC as a last resort — it blocks in present(), which
+  // conflicts with wait_for_frame() and causes double-blocking.
+  if (SDL_SetGPUSwapchainParameters(
           m_gpu, m_window,
           SDL_GPU_SWAPCHAINCOMPOSITION_SDR,
           SDL_GPU_PRESENTMODE_MAILBOX)) {
-    SDL_Log("MAILBOX present mode unavailable, falling back to VSYNC");
+    m_present_mode = SDL_GPU_PRESENTMODE_MAILBOX;
+  } else if (SDL_SetGPUSwapchainParameters(
+                 m_gpu, m_window,
+                 SDL_GPU_SWAPCHAINCOMPOSITION_SDR,
+                 SDL_GPU_PRESENTMODE_IMMEDIATE)) {
+    SDL_Log("MAILBOX present mode unavailable, falling back to IMMEDIATE");
+    m_present_mode = SDL_GPU_PRESENTMODE_IMMEDIATE;
+  } else {
+    SDL_Log("MAILBOX and IMMEDIATE present modes unavailable, falling back to VSYNC");
     SDL_SetGPUSwapchainParameters(
         m_gpu, m_window,
         SDL_GPU_SWAPCHAINCOMPOSITION_SDR,
         SDL_GPU_PRESENTMODE_VSYNC);
+    m_present_mode = SDL_GPU_PRESENTMODE_VSYNC;
   }
 }
 

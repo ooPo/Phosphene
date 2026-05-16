@@ -31,8 +31,8 @@ The standard is **C++17** (`-std=c++17`). There are no tests and no linter confi
 `Window` owns the SDL3 GPU device and window. All other classes hold a **non-owning pointer** to it and require it to remain valid for their lifetime. Shutdown order must be the reverse of init order.
 
 **Frame loop contract** (see `examples/basic/main.cpp`):
-1. `audio.wait_for_frame()` — blocks until the audio queue drains to ~2 frames, providing frame pacing
-2. `audio.compute_drc_rate(resampler)` + `resampler.set_out_rate(rate)` — adjust resampler output rate each frame to correct clock drift (DRC)
+1. `if (!ctx.is_vsync()) audio.wait_for_frame()` — blocks until the audio queue drains to ~2 frames, providing frame pacing. Skip when VSync is active: `video.present()` already blocks for the display refresh, and running both causes double-blocking (~2× frame time).
+2. `audio.compute_drc_rate(resampler)` + `resampler.set_out_rate(rate)` — adjust resampler output rate each frame to correct clock drift (DRC). Run regardless of present mode.
 3. Generate video and audio data
 4. `audio.push()` + `video.present()` — submit to SDL3
 

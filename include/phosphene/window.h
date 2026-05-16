@@ -29,7 +29,13 @@ public:
   /// Get the window handle (non-null after init).
   SDL_Window *window() const { return m_window; }
 
+  /// Returns true when the swapchain is using VSYNC present mode.
+  /// Use this to skip audio-based frame pacing (wait_for_frame()), since VSYNC
+  /// already provides it — running both causes double-blocking and slowdowns.
+  bool is_vsync() const { return m_present_mode == SDL_GPU_PRESENTMODE_VSYNC; }
+
 private:
-  SDL_GPUDevice *m_gpu = nullptr;
-  SDL_Window *m_window = nullptr;
+  SDL_GPUDevice    *m_gpu          = nullptr;
+  SDL_Window       *m_window       = nullptr;
+  SDL_GPUPresentMode m_present_mode = SDL_GPU_PRESENTMODE_VSYNC;
 };
